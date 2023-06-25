@@ -348,11 +348,7 @@ public:
 				break;
 			}
 		}
-		
-
-		
-
-
+	
 	}
 
     template< class U >
@@ -424,6 +420,3 @@ constexpr bool operator!= (const CustomAllocator<T>& a1, const CustomAllocator<U
 {
 	return a1.pool != a2.pool;
 }
-
-
-

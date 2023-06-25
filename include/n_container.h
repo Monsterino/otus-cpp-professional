@@ -24,6 +24,50 @@ class N_Container {
 
 		N_Container() : size_container{ 0 }, first_node{ nullptr }, last_node{ nullptr } {};
 
+		N_Container(const N_Container &other_container)
+		{      
+			size_container = other_container.size_container;
+
+			Node* prev = nullptr;
+			Node* current_node = nullptr;
+
+
+			if (size_container>0)
+			{
+				first_node = node_allocator.allocate(1);
+				node_allocator.construct(first_node, Node{});
+				first_node->value = other_container.first_node->value;
+
+				current_node =  other_container.first_node;
+				prev = first_node;
+				last_node = first_node;
+			}
+			
+
+
+			for (int i = 1; i < size_container; i++)
+			{
+				current_node = current_node->next;
+
+				Node* new_node = node_allocator.allocate(1);
+				node_allocator.construct(new_node, Node{});
+
+				new_node->value = current_node->value;
+				new_node->prev = prev;
+
+				prev->next = new_node;
+
+				prev = new_node;
+				last_node = new_node;
+
+			}
+
+			node_allocator = other_container.node_allocator;
+			
+
+
+    	}
+
 		~N_Container() {
 			for (int i = 0; i < size_container-1; i++)
 			{
@@ -35,6 +79,8 @@ class N_Container {
 //			delete first_node;
 			node_allocator.deallocate(first_node, 1);
 		}
+
+
 	private:
 		Node* current_element;
 		NodeAllocator node_allocator;
