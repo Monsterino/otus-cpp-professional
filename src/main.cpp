@@ -7,7 +7,6 @@ int main(){
     N_Container<int> container_std_allocator;
     N_Container<int,CustomAllocator<int>> container_custom_allocator;
 
-    container_std_allocator.push_back(44);
 
 
     int factorial = 1;

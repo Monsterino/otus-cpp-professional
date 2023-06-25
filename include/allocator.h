@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 #include <map>
+#include <algorithm>
 
 
 
@@ -27,7 +28,6 @@ public:
 		//std::cout << "Destructor" << std::endl;
 		for (auto it  = allocated_memory_blocks.begin(); it != allocated_memory_blocks.end(); ++it)
 		{		
-			//std::free((void*)*it->start_element);
 			std::free(it->start_element);
 		}
 	}
@@ -69,6 +69,14 @@ public:
 			}
 			
 		}
+		
+// 		std::find_if(allocated_memory_blocks.begin(), allocated_memory_blocks.end(), [&current_empty_element](const Memory_Block& block)-> void {if (block.current_empty_element != nullptr){
+//																																			 current_empty_element = block.current_empty_element;
+//																																		     };});
+
+		//typename std::vector<Memory_Block>::iterator itr = std::find_if(allocated_memory_blocks.begin(), allocated_memory_blocks.end(), [&current_empty_element](const Memory_Block& block){}});
+
+
 
         if (current_empty_element == nullptr)
         {
@@ -77,11 +85,8 @@ public:
 			begin_of_block = reinterpret_cast<unsigned char*>(malloc(used_memory)); //Выделяем память, на начало нашей памяти смотрит указалель элементов
             memory_allocate(begin_of_block,num_elements); // Разбиваем всю выделеную память на элементы, каждый элемент хранит в первом байте сдвиг на следующий свободный элемент
 		
-			//blocks_count += 1;
-
 			current_empty_element = check_free_space(begin_of_block, n);
 
-//			current_empty_element = begin_of_block + sizeof(T)*n;
 			Memory_Block block{ begin_of_block ,(begin_of_block+ used_memory),current_empty_element };
 			allocated_memory_blocks.push_back(block);
 			return reinterpret_cast<T*>(begin_of_block);
@@ -107,9 +112,12 @@ public:
 				auto iterate_element = start_of_iterate_element;
 
 				std::size_t counter = 1;
+
+				auto start = allocated_memory_blocks[i].start_element;
+
 				for (;;)
 				{
-					if (allocated_memory_blocks[i].start_element + (*iterate_element) * sizeof(T) - iterate_element == sizeof(T))   //Если следующий элемент в памяти лежит рядом
+					if (start + (*iterate_element) * sizeof(T) - iterate_element == sizeof(T))   //Если следующий элемент в памяти лежит рядом
 					{
 						counter += 1;                                                //То обновляем размер свободной памяти
 						iterate_element = iterate_element + sizeof(T);            //И переходим к следующему элементу
@@ -142,29 +150,31 @@ public:
 						else
 						{
 							check_min_memory(counter, n, min_value, start_of_iterate_element, iterate_element);
-							start_of_iterate_element = allocated_memory_blocks[i].start_element + *(iterate_element)*sizeof(T);
+							start_of_iterate_element = start + *(iterate_element) * sizeof(T);
 							iterate_element = start_of_iterate_element;
 						}
 					}
 				}
 			}
 				
-				//Далее проверяем,есть ли у нас из выделенной памяти свободная, если  памяти у нас хватает, то отдаем данный указатель контейнеру, если нет, то связываем нашу предыдущий блок памяти со следующим, отдаем указатель на новый блок
+				//Далее проверяем,есть ли у нас из выделенной памяти свободная, если  памяти у нас хватает, то отдаем данный указатель контейнеру, если нет, то создаем выделяем новый участок памяти
 
 			if (min_value.first != 0)
 			{
-				if (allocated_memory_blocks[num_of_block].current_empty_element == min_value.second)
+				auto empty = allocated_memory_blocks[num_of_block].current_empty_element;
+				auto start = allocated_memory_blocks[num_of_block].start_element;
+				if (empty == min_value.second)
 				{
 					allocated_memory_blocks[num_of_block].current_empty_element = check_free_space(min_value.second, n);
 				}
 				else
 				{
 					auto before_allocated_element = allocated_memory_blocks[num_of_block].current_empty_element;
-					while ((allocated_memory_blocks[num_of_block].start_element + (*before_allocated_element)*sizeof(T)) != min_value.second)
+					while ((start + (*before_allocated_element)*sizeof(T)) != min_value.second)
 					{
-						before_allocated_element = allocated_memory_blocks[num_of_block].start_element + (*before_allocated_element) * sizeof(T);
+						before_allocated_element = start + (*before_allocated_element) * sizeof(T);
 					}
-					*before_allocated_element = *(min_value.second + (n - 1) * sizeof(T));
+					*before_allocated_element = min_value.second[(n - 1) * sizeof(T)];
 				}
 				
 				return reinterpret_cast<T*>(min_value.second);
@@ -181,7 +191,6 @@ public:
 
 				Memory_Block block{ begin_of_block ,(begin_of_block + used_memory),current_empty_element };
 
-					//std::pair<unsigned char*, unsigned char*> block{ begin_of_block ,current_empty_element };
 				allocated_memory_blocks.push_back(block);
 				return reinterpret_cast<T*>(begin_of_block);
 				}
@@ -205,7 +214,10 @@ public:
 		//Выделяли ли мы память по данному указателю?
 		for (size_t i = 0; i < allocated_memory_blocks.size(); i++)
 		{
-			if ((allocated_memory_blocks[i].start_element <= pointer_to_dealloc) && (allocated_memory_blocks[i].last_element > pointer_to_dealloc))
+			auto start = allocated_memory_blocks[i].start_element;
+			auto last = allocated_memory_blocks[i].last_element;
+
+			if ((start <= pointer_to_dealloc) && (last > pointer_to_dealloc))
 			{
 				block_dealloc = allocated_memory_blocks[i];
 				block_number = i;
@@ -379,15 +391,14 @@ public:
 	
 	}
     void memory_allocate(unsigned char* begin, std::size_t num_element){
- //       CustomElement* element = begin;
         for (size_t i = 0; i < num_element-1 ; i++)
         {
-			*(begin + (i * sizeof(T))) = i+1;
+			begin[i * sizeof(T)] = i+1;
             //std::cout << (void*)(begin + (i * sizeof(T))) << "->" << (int)*(begin + (i * sizeof(T))) << std::endl;
 
            
         }
-		*(begin + ((num_element-1) * sizeof(T))) = 0;
+		begin[(num_element-1) * sizeof(T)] = 0;
 //		std::cout << (void*)(begin + ((num_element - 1) * sizeof(T))) << "->" << (int)*(begin + ((num_element - 1) * sizeof(T))) << std::endl;
 //        std::cout << element << "->" <<  element->next_element << std::endl;
   

@@ -72,11 +72,12 @@ class N_Container {
 			for (int i = 0; i < size_container-1; i++)
 			{
 				first_node = first_node->next;
-				//delete first_node->prev;
+				node_allocator.destroy(first_node->prev);
 				node_allocator.deallocate(first_node->prev, 1);
 //				node_allocator.destroy(first_node->prev);
 			}
 //			delete first_node;
+			node_allocator.destroy(first_node);
 			node_allocator.deallocate(first_node, 1);
 		}
 
@@ -163,22 +164,19 @@ class N_Container {
 			if (id_element == 0) {
 				position_node = first_node->next;
 				position_node->prev = nullptr;
+				node_allocator.destroy(first_node);
 				node_allocator.deallocate(first_node, 1);
-//				node_allocator.destroy(first_node);
-
-
-//				delete first_node;
-
+			
 				first_node = position_node;
 			}
 			else if (id == size_container)
 			{
 				position_node = last_node->prev;
 				position_node->next = nullptr;
+				node_allocator.destroy(last_node);
 				node_allocator.deallocate(last_node, 1);
-//				node_allocator.destroy(last_node);
+				
 
-//				delete last_node;
 				last_node = position_node;
 			}
 			else {
@@ -189,10 +187,8 @@ class N_Container {
 						position_node->prev->next = position_node->next;
 						position_node->next->prev = position_node->prev;
 
+						node_allocator.destroy(position_node);
 						node_allocator.deallocate(position_node, 1);
-//						node_allocator.destroy(position_node);
-
-//						delete position_node;
 
 					}
 					else
