@@ -41,7 +41,7 @@ int main()
 
         for(std::string line; std::getline(std::cin, line);)
         {
-            long ip = 0;
+            long long ip = 0;
             std::vector<std::string> v = split(line, '\t');
             
             auto ip_elements = split(v.at(0), '.');
@@ -53,8 +53,8 @@ int main()
             
         }
 
-        my_filter.sort(true);
-        my_filter.get_ips();
+        my_filter.sort(false);
+        my_filter.show_ips();
         my_filter.search(1);
         my_filter.search(46, 70);
         my_filter.filter_any(46);
