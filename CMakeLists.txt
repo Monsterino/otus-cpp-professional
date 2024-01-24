@@ -40,25 +40,6 @@ target_include_directories(bayan PRIVATE include)
 
 target_compile_features(bayan PUBLIC cxx_std_17)
 
-if (MSVC)
-    target_compile_options(bayan PRIVATE
-        /W4
-    )
-    target_compile_options(version_lib PRIVATE
-        /W4
-    )
-    
-else ()
-    target_compile_options(bayan PRIVATE
-        -Wall -Wextra -pedantic -Werror
-    )
-    target_compile_options(version_lib PRIVATE
-        -Wall -Wextra -pedantic -Werror
-    )
-    
-endif()
-
-
 
 install(TARGETS bayan RUNTIME DESTINATION bin)
 
