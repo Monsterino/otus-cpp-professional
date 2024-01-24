@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: true
-      - run: sudo apt-get update && sudo apt-get install libboost-test-dev -y 
+      - run: sudo apt-get update && sudo apt-get install libboost-all-dev -y 
 #      - run: mkdir gtest
 #      - run: git clone https://github.com/google/googletest && cd ./googletest && mkdir build && cd ./build && cmake .. -Dgtest_force_shared_crt=ON -DCMAKE_INSTALL_PREFIX=/home/runner/work/otus-cpp-professional/gtest && cmake --build . --target install
 #      - run: pwd && ls -la && cd ./gtest && ls
