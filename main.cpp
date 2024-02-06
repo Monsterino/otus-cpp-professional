@@ -1,7 +1,8 @@
 ﻿#include <iostream>
 
-#include "handlers.h"
-#include "command_executor.h"
+#include "accumulator.h"
+#include "logger.h"
+#include "writer.h"
 
 
 int main(int argc, char** argv)
@@ -12,15 +13,15 @@ int main(int argc, char** argv)
         return 1;
     }
     int N = std::stoi(argv[1]);
-    Bulk_Accumulator accumulator = Bulk_Accumulator(N);
-
-    Command_Executor executor = { new MainHandler(N,accumulator), new LoggerHandler(accumulator), new ExecuteHandler(accumulator) };
+    auto accumulator = std::make_unique<Accumulator>(N);
+    accumulator->add_handler(std::make_shared<Logger>());
+    accumulator->add_handler(std::make_shared<Writer>());
 
     while (true)
     {
         std::string cmd;
         std::cin >> cmd;
-        executor.pass(cmd);
+        accumulator->add_command(cmd);
         if (cmd == "EOF")
         {
             break;

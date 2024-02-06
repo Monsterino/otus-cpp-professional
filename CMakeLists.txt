@@ -11,11 +11,9 @@ configure_file(version.h.in version.h)
 
 add_executable(bulk
     main.cpp 
-    src/bulk_command.cpp
-    src/execute_handler.cpp
-    src/logger_handler.cpp
-    src/main_handler.cpp
-    src/command_executor.cpp
+    src/accumulator.cpp
+    src/logger.cpp
+    src/writer.cpp
 )
 
 add_library(version_lib libs/lib.cpp)
@@ -33,25 +31,6 @@ target_link_libraries(bulk PRIVATE version_lib)
 
 
 target_compile_features(bulk PUBLIC cxx_std_17)
-
-if (MSVC)
-    target_compile_options(bulk PRIVATE
-        /W4
-    )
-    target_compile_options(version_lib PRIVATE
-        /W4
-    )
-    
-else ()
-    target_compile_options(bulk PRIVATE
-        -Wall -Wextra -pedantic -Werror
-    )
-    target_compile_options(version_lib PRIVATE
-        -Wall -Wextra -pedantic -Werror
-    )
-    
-endif()
-
 
 
 install(TARGETS bulk RUNTIME DESTINATION bin)
