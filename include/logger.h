@@ -33,6 +33,7 @@ private:
 	std::vector<std::string> block_;
 	std::queue<std::vector<std::string>> tasks_;
 	int it_;
+	inline static std::mutex console_mutex;
 };
 
 

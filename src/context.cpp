@@ -9,7 +9,7 @@ Context::Context(std::size_t bulk)
 	logger_ = std::shared_ptr<Logger>(new Logger());
 	writer_ = std::shared_ptr<Writer>(new Writer(id));
 
-//	
+
 	accumulator_->add_handler(logger_);
 	accumulator_->add_handler(writer_);
 	

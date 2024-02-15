@@ -46,6 +46,7 @@ void Logger::write_commands()
 													
 		}
 		lock.unlock();
+		std::unique_lock<std::mutex> c_lock{console_mutex};
 
 		std::string sep = "";
 		std::cout << "bulk: ";
@@ -56,6 +57,7 @@ void Logger::write_commands()
 			it_++;
 		}
 		std::cout << std::endl;
+		c_lock.unlock();
 		if (stop_ && tasks_.empty() && (it_ == block_.size()))						
 		{break_ = true;	}
 
