@@ -61,7 +61,7 @@ target_include_directories(version_lib PRIVATE "${CMAKE_BINARY_DIR}")
 					 
 target_link_libraries(bulkmt PRIVATE async)
 target_link_libraries(bulkmt PRIVATE version_lib)
-target_link_libraries(tests PRIVATE  ${GTEST_LIBRARIES} )
+target_link_libraries(tests PRIVATE  ${GTEST_BOTH_LIBRARIES} )
 target_link_libraries(tests PRIVATE  async )
 
 
