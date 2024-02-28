@@ -32,7 +32,7 @@ add_library(async SHARED lib/async.cpp
 add_library(version_lib lib/lib.cpp)
 
 
-add_executable(tests
+add_executable(u_tests
 			   tests/cpp/test.cpp
 			   tests/cpp/test_logger.cpp
 			   tests/cpp/test_writer.cpp
@@ -44,14 +44,14 @@ add_executable(tests
 
 
 
-set_target_properties(bulkmt async tests PROPERTIES
+set_target_properties(bulkmt async u_tests PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
 )
 
 target_include_directories(bulkmt PRIVATE lib include)
 target_include_directories(async PRIVATE include)
-target_include_directories(tests PRIVATE lib 
+target_include_directories(u_tests PRIVATE lib 
 										 include 
 										 tests/include
 										 ${GTEST_INCLUDE_DIRS})
@@ -61,8 +61,8 @@ target_include_directories(version_lib PRIVATE "${CMAKE_BINARY_DIR}")
 					 
 target_link_libraries(bulkmt PRIVATE async)
 target_link_libraries(bulkmt PRIVATE version_lib)
-target_link_libraries(tests PRIVATE  ${GTEST_BOTH_LIBRARIES} )
-target_link_libraries(tests PRIVATE  async )
+target_link_libraries(u_tests PRIVATE  ${GTEST_BOTH_LIBRARIES} )
+target_link_libraries(u_tests PRIVATE  async )
 
 
 target_compile_features(bulkmt PUBLIC cxx_std_17)
@@ -80,5 +80,5 @@ set(CPACK_PACKAGE_CONTACT example@example.com)
 include(CPack)
 
 enable_testing()
-add_test(tests tests)
+add_test(u_tests u_tests)
 
