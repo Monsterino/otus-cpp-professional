@@ -19,8 +19,7 @@ public:
 	~Logger();
 
 	void write_commands();
-
-
+	
 	void write(std::vector<std::string> &vec, std::string& time) override;
 	void stop();
 
@@ -30,9 +29,9 @@ private:
 	bool break_;
 	std::mutex mutex_;
 	std::thread th_logger_;
+	int it_;
 	std::vector<std::string> block_;
 	std::queue<std::vector<std::string>> tasks_;
-	int it_;
 	inline static std::mutex console_mutex;
 };
 

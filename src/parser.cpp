@@ -19,6 +19,10 @@ void Parser::parse(const char* data, std::size_t size) {
 			accumulator_->add_command(command);
 			command.clear();
 		}
+		else if (el == '\r')
+		{
+			continue;
+		}
 		else if (el != '\n'){
 			command += el;
 		}
@@ -28,4 +32,10 @@ void Parser::parse(const char* data, std::size_t size) {
 		accumulator_->add_command(command);
 	}
 
+}
+
+
+
+std::shared_ptr<Accumulator>  Parser::get_accumulator() {
+	return accumulator_;
 }

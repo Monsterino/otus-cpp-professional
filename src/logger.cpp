@@ -28,15 +28,52 @@ void Logger::write_commands()
 {
 	std::ofstream logfile;
 
-	while (!stop_ || !break_)
+	while (!stop_ )
 	{
 		std::unique_lock<std::mutex> lock{ mutex_ };
 		
-		while ((!stop_ || !break_) && (tasks_.empty() && (it_ == block_.size() || it_ == -1)))
+		while (!stop_  && (tasks_.empty() && (it_ == block_.size() || it_ == -1)))
 		{
 			condition_.wait(lock);
 		}
-		if (stop_&& break_){break;}
+
+		if (stop_) {
+			if ((tasks_.empty() && (it_ == block_.size() || it_ == -1)))
+			{
+				break_ = true;
+			}
+			break;
+		}
+		if (it_ == block_.size() || it_ == -1)											
+		{
+			block_ = tasks_.front();												
+			it_ = 0;																	
+			tasks_.pop();																
+													
+		}
+		lock.unlock();
+		std::unique_lock<std::mutex> c_lock{console_mutex};
+
+		std::string sep = "";
+		std::cout << "bulk: ";
+		while (it_!= block_.size())
+		{
+			std::cout << sep << block_[it_];
+			sep = ", ";
+			it_++;
+		}
+		std::cout << std::endl;
+		c_lock.unlock();
+		if (stop_ && tasks_.empty() && (it_ == block_.size()))						
+		{break_ = true;	}
+
+	}
+
+	while (!break_ )
+	{
+		std::unique_lock<std::mutex> lock{ mutex_ };
+		
+		if (break_) { break; }
 		
 		if (it_ == block_.size() || it_ == -1)											
 		{

@@ -79,9 +79,8 @@ void Writer::write_commands(std::string name)
 
 		last_bulk = bulk_counter_;														//Обновляем информацию о блоке, с которым мы работали
 
-
-		lock.unlock();
-		condition_.notify_all();
+		
+		
 
 		if (!logfile.is_open())															//Если открытых файлов нет, то создаем новый
 		{
@@ -89,8 +88,12 @@ void Writer::write_commands(std::string name)
 			logfile.open(filename);
 			logfile << "bulk: ";
 		}
+
+		lock.unlock();
+		condition_.notify_all();
 		logfile << cmd << " ";
 	
+		
 	}
 
 	condition_.notify_all();
@@ -126,8 +129,6 @@ void Writer::write_commands(std::string name)
 			break_ = true;
 		}
 
-		lock.unlock();
-		condition_.notify_all();
 
 		if (!logfile.is_open())															
 		{
@@ -137,6 +138,9 @@ void Writer::write_commands(std::string name)
 		}
 		logfile << cmd << " ";
 
+		lock.unlock();
+		condition_.notify_all();
+		
 	}
 
 	condition_.notify_all();

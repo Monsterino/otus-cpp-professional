@@ -74,22 +74,33 @@ void Accumulator::execute_block()  {
 }	
 
 
-
-
-//	if (command_block_.size())
-//	{
-//		std::cout << "Bulk:";
-//		std::string sep =" ";
-//		for (auto i : command_block_) {
-//			std::cout << sep << i;
-//			sep = ", ";
-//		}
-//		std::cout << std::endl;
-//	}
-//	command_block_.clear();
-
-
-
 void Accumulator::add_handler(std::shared_ptr<Handler> handler) {
 	handlers_.push_back(handler);
+}
+
+std::vector<std::string> Accumulator::get_command_block() {
+	return command_block_;
+}
+
+std::vector<std::shared_ptr<Handler>> Accumulator::get_handlers() {
+	return handlers_;
+}
+
+bool Accumulator::get_state() {
+	return static_state_;
+};
+int Accumulator::get_depth() {
+	return current_depth_;
+}
+
+void Accumulator::clear_block(){
+	command_block_.clear();
+}
+
+
+void Accumulator::reset() {
+	current_depth_ = 0;
+	static_state_ = true;
+	first_command_time_="0";
+	clear_block();
 }
