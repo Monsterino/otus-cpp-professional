@@ -27,9 +27,9 @@ jobs:
         with:
           submodules: true
       - run: sudo apt-get update && sudo apt-get install libgtest-dev -y 
-#      - run: mkdir gtest
-#      - run: git clone https://github.com/google/googletest && cd ./googletest && mkdir build && cd ./build && cmake .. -Dgtest_force_shared_crt=ON -DCMAKE_INSTALL_PREFIX=/home/runner/work/otus-cpp-professional/gtest && cmake --build . --target install
-#      - run: pwd && ls -la && cd ./gtest && ls
+      - run: mkdir gtest
+      - run: git clone https://github.com/google/googletest && cd ./googletest && mkdir build && cd ./build && cmake .. -Dgtest_force_shared_crt=ON -DCMAKE_INSTALL_PREFIX=/home/runner/work/otus-cpp-professional/gtest && cmake --build . --target install
+      - run: pwd && ls -la && cd ./gtest && ls
       - run: cmake . -DPATCH_VERSION=${{ github.run_number }}
       - run: cmake --build .
 #      - run: cmake --build . --target test
