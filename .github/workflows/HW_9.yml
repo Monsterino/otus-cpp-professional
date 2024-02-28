@@ -27,7 +27,7 @@ jobs:
         with:
           submodules: true
       - run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo cp lib/*.a /usr/lib && sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a && sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
-      - run: 
+
 #      - run: mkdir gtest
 #      - run: git clone https://github.com/google/googletest && cd ./googletest && mkdir build && cd ./build && cmake .. -Dgtest_force_shared_crt=ON -DCMAKE_INSTALL_PREFIX=/home/runner/work/otus-cpp-professional/gtest && cmake --build . --target install
       - run: pwd && ls -la && cd ./gtest && ls
