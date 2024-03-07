@@ -25,7 +25,9 @@ void Pusher::push(const std::string& el)
 {
 	if (el!="EOF") {
 		generate_time();
+		std::unique_lock<std::shared_mutex> lk(mutex);
 		command_block_.push_back(el);
+		lk.unlock();
 		if (command_block_.size() == bulk_)
 		{
 			execute_block(command_block_, first_command_time_,false);

@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-
+#include <shared_mutex>
 
 #include "logger.h"
 #include "writer.h"
@@ -25,6 +25,7 @@ public:
 
 private:
 	inline static int num_connects = 0;
+	mutable std::shared_mutex mutex;
 	int bulk_;
 
 	std::vector<std::string> command_block_;
