@@ -1,0 +1,6 @@
+aaaaaaaac - 2
+aaaaad    - 4
+aaaab     - 12
+aaaac     - 6
+aaaae     - 4
+aaaaf     - 4
